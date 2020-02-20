@@ -1,11 +1,6 @@
 /****************************************************
-* ³ÌĞòÃû³Æ£ºÊµÏÖË®²¨ÎÆÏÔÊ¾							*
-* ±àÒë»·¾³£ºVisual C++ 6.0£¬EasyX 20130114(beta)	*
-* ×÷¡¡¡¡Õß£ººÀ (QQ: 415051674) 					*
-* ºËĞÄËã·¨£º²Î¿¼ÍøÉÏËã·¨							*
-* ×îºóĞŞ¸Ä£º2013/3/20								*
+*è¿è¡Œç¯å¢ƒ: VS2019
 ****************************************************/
-/* ¡¾×ÔÑ§È¥¡¿ÍøÕ¾ÊÕ¼¯ http://www.zixue7.com */
 
 #include <graphics.h>
 #include <stdio.h>
@@ -13,47 +8,44 @@
 #include <time.h>
 #include <stdlib.h>
 
-//Èç¹ûºÍÍ¼Æ¬µÄ³ß´ç²»Ò»Ñù»áµ¼ÖÂÍ¼Æ¬¼ÓÔØ³ö´í
-#define PIC_HEIGHT 705 //Í¼Æ¬µÄ¸ß¶È
-#define PIC_WIDTH  960 //Í¼Æ¬µÄ¿í¶È
-#define PICTURE  "bg2.JPG"//Í¼Æ¬µÄÃû³Æ
+//å¦‚æœå’Œå›¾ç‰‡çš„å°ºå¯¸ä¸ä¸€æ ·ä¼šå¯¼è‡´å›¾ç‰‡åŠ è½½å‡ºé”™
+#define PIC_HEIGHT 705 //å›¾ç‰‡çš„é«˜åº¦
+#define PIC_WIDTH  960 //å›¾ç‰‡çš„å®½åº¦
+#define PICTURE  "bg2.JPG"//å›¾ç‰‡çš„åç§°
 
-void FrameFun();									// Ö¡Âß¼­º¯Êı£¬´¦ÀíÃ¿Ò»Ö¡µÄÂß¼­
-void RenderFun();									// Ö¡äÖÈ¾º¯Êı£¬Êä³öÃ¿Ò»Ö¡µ½ÏÔÊ¾Éè±¸
+void FrameFun();// å¸§é€»è¾‘å‡½æ•°ï¼Œå¤„ç†æ¯ä¸€å¸§çš„é€»è¾‘
+void RenderFun();// å¸§æ¸²æŸ“å‡½æ•°ï¼Œè¾“å‡ºæ¯ä¸€å¸§åˆ°æ˜¾ç¤ºè®¾å¤‡
 
-IMAGE src_img;										// Ô­Î»Í¼		
-IMAGE dest_img(PIC_WIDTH, PIC_HEIGHT);				// ´¦ÀíºóÏÔÊ¾µÄÎ»Í¼
-DWORD* img_ptr1;									// Ô­Í¼Æ¬Æ¬ÄÚ´æÖ¸Õë
-DWORD* img_ptr2;									// ´¦ÀíºóÏÔÊ¾µÄÎ»Í¼ÄÚ´æÖ¸Õë
+IMAGE src_img;// åŸä½å›¾		
+IMAGE dest_img(PIC_WIDTH, PIC_HEIGHT);// å¤„ç†åæ˜¾ç¤ºçš„ä½å›¾
+DWORD* img_ptr1;// åŸå›¾ç‰‡ç‰‡å†…å­˜æŒ‡é’ˆ
+DWORD* img_ptr2;// å¤„ç†åæ˜¾ç¤ºçš„ä½å›¾å†…å­˜æŒ‡é’ˆ
 
 
-// ÒÔÏÂÁ½¸ö buf ÎªÃ¿Ò»¸öµãµÄ²¨·ù£¬Ç°ÕßÎªµ±Ç°²¨·ù£¬ºóÕßÎªÏÂÒ»¸öÊ±¿ÌµÄ²¨·ù¡£
+// ä»¥ä¸‹ä¸¤ä¸ª buf ä¸ºæ¯ä¸€ä¸ªç‚¹çš„æ³¢å¹…ï¼Œå‰è€…ä¸ºå½“å‰æ³¢å¹…ï¼Œåè€…ä¸ºä¸‹ä¸€ä¸ªæ—¶åˆ»çš„æ³¢å¹…ã€‚
 short* buf = new short[PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH];
 short* buf2 = new short[PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH];
-//short *buf = new short[PIC_HEIGHT*PIC_WIDTH];
-//short *buf2 = new short[PIC_HEIGHT*PIC_WIDTH];
-
 
 int main()
 {
-	// ³õÊ¼»¯Éè±¸£¬¼ÓÔØÍ¼Æ¬
+	// åˆå§‹åŒ–è®¾å¤‡ï¼ŒåŠ è½½å›¾ç‰‡
 	initgraph(PIC_WIDTH, PIC_HEIGHT);
-	SetWindowText(GetHWnd(), "Ë®²¨ÎÆÌØĞ§");
-	loadimage(&src_img, PICTURE);		// ¼ÓÔØÍ¼Æ¬
+	SetWindowText(GetHWnd(), "æ°´æ³¢çº¹ç‰¹æ•ˆ");
+	loadimage(&src_img, PICTURE);// åŠ è½½å›¾ç‰‡
 	setbkmode(TRANSPARENT);
 	settextcolor(BLACK);
 	//settextstyle(25, 0, "Rock");
 
-	// »ñµÃÄÚ´æÖ¸Õë
+	// è·å¾—å†…å­˜æŒ‡é’ˆ
 	img_ptr1 = GetImageBuffer(&src_img);
 	img_ptr2 = GetImageBuffer(&dest_img);
 
-	// ³õÊ¼»¯²¨·ùÊı×é
+	// åˆå§‹åŒ–æ³¢å¹…æ•°ç»„
 	memset(buf, 0, (PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH) * sizeof(short));
 	memset(buf2, 0, (PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH) * sizeof(short));
 
 	// Let's Go!
-	BeginBatchDraw();		// Ë«»º³å£¬ÉÁÆÁÊ±ĞèÒª
+	BeginBatchDraw();// åŒç¼“å†²ï¼Œé—ªå±æ—¶éœ€è¦
 	while (true)
 	{
 		FrameFun();
@@ -64,15 +56,15 @@ int main()
 	EndBatchDraw();
 }
 
-// ¼ÆËã³öÏÂÒ»¸öÊ±¿ÌËùÓĞµãµÄ²¨·ù
+// è®¡ç®—å‡ºä¸‹ä¸€ä¸ªæ—¶åˆ»æ‰€æœ‰ç‚¹çš„æ³¢å¹…
 void nextFrame()
 {
 	for (int i = PIC_WIDTH; i < PIC_HEIGHT * (PIC_WIDTH - 1); i++)
 	{
-		// ¹«Ê½£ºX0'= (X1+X2+X3+X4) / 2 - X0
+		// å…¬å¼ï¼šX0'= (X1+X2+X3+X4) / 2 - X0
 		buf2[i] = ((buf[i - PIC_WIDTH] + buf[i + PIC_WIDTH] + buf[i - 1] + buf[i + 1]) >> 1) - buf2[i];
 
-		// ²¨ÄÜË¥¼õ,Æ«ÒÆµÄ·¶Î§
+		// æ³¢èƒ½è¡°å‡,åç§»çš„èŒƒå›´
 		buf2[i] -= buf2[i] >> 12;
 	}
 
@@ -114,7 +106,7 @@ void RenderRipple3() {
 	}
 }
 
-// ´¦Àíµ±Ç°Ê±¿Ì²¨·ùÓ°ÏìÖ®ºóµÄÎ»Í¼£¬±£´æÔÚ dest_img ÖĞ
+// å¤„ç†å½“å‰æ—¶åˆ»æ³¢å¹…å½±å“ä¹‹åçš„ä½å›¾ï¼Œä¿å­˜åœ¨ dest_img ä¸­
 void RenderRipple2()
 {
 	int i = 0;
@@ -127,17 +119,17 @@ void RenderRipple2()
 		{
 			short data = 1024 - buf[i];
 
-			// Æ«ÒÆ
+			// åç§»
 			int a = ((x - PIC_WIDTH / 2) * data / 1024) + PIC_WIDTH / 2;
 			int b = ((y - PIC_HEIGHT / 2) * data / 1024) + PIC_HEIGHT / 2;
 
-			// ±ß½ç´¦Àí
+			// è¾¹ç•Œå¤„ç†
 			if (a >= PIC_WIDTH)		a = PIC_WIDTH - 1;
 			if (a < 0)				a = 0;
 			if (b >= PIC_HEIGHT)	b = PIC_HEIGHT - 1;
 			if (b < 0)				b = 0;
 
-			// ´¦ÀíÆ«ÒÆ 
+			// å¤„ç†åç§» 
 			img_ptr2[i] = img_ptr1[a + (b * PIC_WIDTH)];
 
 			i++;
@@ -145,7 +137,7 @@ void RenderRipple2()
 	}
 }
 
-// ´¦Àíµ±Ç°Ê±¿Ì²¨·ùÓ°ÏìÖ®ºóµÄÎ»Í¼£¬±£´æÔÚ dest_img ÖĞ
+// å¤„ç†å½“å‰æ—¶åˆ»æ³¢å¹…å½±å“ä¹‹åçš„ä½å›¾ï¼Œä¿å­˜åœ¨ dest_img ä¸­
 void RenderRipple()
 {
 	int i = 0;
@@ -155,17 +147,17 @@ void RenderRipple()
 		{
 			short data = 1024 - buf[i];
 
-			// Æ«ÒÆ
+			// åç§»
 			int a = ((x - PIC_WIDTH / 2) * data / 1024) + PIC_WIDTH / 2;
 			int b = ((y - PIC_HEIGHT / 2) * data / 1024) + PIC_HEIGHT / 2;
 
-			// ±ß½ç´¦Àí
+			// è¾¹ç•Œå¤„ç†
 			if (a >= PIC_WIDTH)		a = PIC_WIDTH - 1;
 			if (a < 0)				a = 0;
 			if (b >= PIC_HEIGHT)	b = PIC_HEIGHT - 1;
 			if (b < 0)				b = 0;
 
-			// ´¦ÀíÆ«ÒÆ 
+			// å¤„ç†åç§» 
 			img_ptr2[i] = img_ptr1[a + (b * PIC_WIDTH)];
 
 			i++;
@@ -173,15 +165,15 @@ void RenderRipple()
 	}
 }
 
-// Êó±êÄ£ÄâÍ¶Ê¯Í·
-// ²ÎÊıËµÃ÷£º
-// (x, y): Êó±ê×ø±ê
-// stonesize: ¡°Ê¯Í·¡±µÄ´óĞ¡,(Ê¯Í·µÄ°ë¾¶£©
-// stoneweight: Í¶¡°Ê¯Í·¡±µÄÁ¦¶È
-// Ps: Èç¹û²úÉú´íÎó£¬Ò»°ã¾ÍÊÇÊı×éÔ½½çËùÖÂ£¬Çë×ÃÇéµ÷Õû¡°Ê¯Í·¡±µÄ´óĞ¡ºÍ¡°Ê¯Í·¡±µÄÁ¦¶È
+// é¼ æ ‡æ¨¡æ‹ŸæŠ•çŸ³å¤´
+// å‚æ•°è¯´æ˜ï¼š
+// (x, y): é¼ æ ‡åæ ‡
+// stonesize: â€œçŸ³å¤´â€çš„å¤§å°,(çŸ³å¤´çš„åŠå¾„ï¼‰
+// stoneweight: æŠ•â€œçŸ³å¤´â€çš„åŠ›åº¦
+// Ps: å¦‚æœäº§ç”Ÿé”™è¯¯ï¼Œä¸€èˆ¬å°±æ˜¯æ•°ç»„è¶Šç•Œæ‰€è‡´ï¼Œè¯·é…Œæƒ…è°ƒæ•´â€œçŸ³å¤´â€çš„å¤§å°å’Œâ€œçŸ³å¤´â€çš„åŠ›åº¦
 void disturb(int x, int y, int stonesize, int stoneweight)
 {
-	// Í»ÆÆ±ß½ç²»´¦Àí
+	// çªç ´è¾¹ç•Œä¸å¤„ç†
 	if ((x >= PIC_WIDTH - stonesize) ||
 		(x < stonesize) ||
 		(y >= PIC_HEIGHT - stonesize) ||
@@ -200,7 +192,7 @@ void disturb(int x, int y, int stonesize, int stoneweight)
 	}
 }
 
-// ¼ÆËãfps
+// è®¡ç®—fps
 float getFps()
 {
 #define FPS_COUNT 8
@@ -220,7 +212,7 @@ float getFps()
 	return fps;
 }
 
-// äÖÈ¾
+// æ¸²æŸ“
 void RenderFun()
 {
 	//RenderRipple();
@@ -233,10 +225,10 @@ void RenderFun()
 	outtextxy(0, 0, s);
 }
 
-// Âß¼­
+// é€»è¾‘
 void FrameFun()
 {
-	// Êó±êµã»÷´¦Àí
+	// é¼ æ ‡ç‚¹å‡»å¤„ç†
 	if (MouseHit()){
 		MOUSEMSG msg = GetMouseMsg();
 		if (msg.uMsg == WM_MOUSEMOVE){
@@ -246,6 +238,6 @@ void FrameFun()
 		}
 		FlushMouseMsgBuffer();
 	}
-	// ¼ÆËãÏÂÒ»Ö¡µÄ²¨·ù
+	// è®¡ç®—ä¸‹ä¸€å¸§çš„æ³¢å¹…
 	nextFrame();
 }
