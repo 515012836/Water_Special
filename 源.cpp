@@ -26,8 +26,7 @@ DWORD* img_ptr2;// 处理后显示的位图内存指针
 short* buf = new short[PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH];
 short* buf2 = new short[PIC_HEIGHT * PIC_WIDTH + PIC_WIDTH];
 
-int main()
-{
+int main(){
 	// 初始化设备，加载图片
 	initgraph(PIC_WIDTH, PIC_HEIGHT);
 	SetWindowText(GetHWnd(), "水波纹特效");
@@ -46,26 +45,23 @@ int main()
 
 	// Let's Go!
 	BeginBatchDraw();// 双缓冲，闪屏时需要
-	while (true)
-	{
+	while (1){
 		FrameFun();
 		RenderFun();
 		FlushBatchDraw();
-		Sleep(3);
+		Sleep(2);
 	}
 	EndBatchDraw();
 }
 
 // 计算出下一个时刻所有点的波幅
-void nextFrame()
-{
-	for (int i = PIC_WIDTH; i < PIC_HEIGHT * (PIC_WIDTH - 1); i++)
-	{
+void nextFrame(){
+	for (int i = PIC_WIDTH; i < PIC_HEIGHT * (PIC_WIDTH - 1); i++){
 		// 公式：X0'= (X1+X2+X3+X4) / 2 - X0
 		buf2[i] = ((buf[i - PIC_WIDTH] + buf[i + PIC_WIDTH] + buf[i - 1] + buf[i + 1]) >> 1) - buf2[i];
 
 		// 波能衰减,偏移的范围
-		buf2[i] -= buf2[i] >> 12;
+		buf2[i] -= buf2[i] >> 4;
 	}
 
 	short* ptmp = buf;
@@ -107,16 +103,13 @@ void RenderRipple3() {
 }
 
 // 处理当前时刻波幅影响之后的位图，保存在 dest_img 中
-void RenderRipple2()
-{
+void RenderRipple2(){
 	int i = 0;
 	//   ---> x
 	//   |
 	// y V  
-	for (int y = 0; y < PIC_HEIGHT; y++)
-	{
-		for (int x = 0; x < PIC_WIDTH; x++)
-		{
+	for (int y = 0; y < PIC_HEIGHT; y++){
+		for (int x = 0; x < PIC_WIDTH; x++){
 			short data = 1024 - buf[i];
 
 			// 偏移
@@ -141,10 +134,8 @@ void RenderRipple2()
 void RenderRipple()
 {
 	int i = 0;
-	for (int y = 0; y < PIC_HEIGHT; y++)
-	{
-		for (int x = 0; x < PIC_WIDTH; x++)
-		{
+	for (int y = 0; y < PIC_HEIGHT; y++){
+		for (int x = 0; x < PIC_WIDTH; x++){
 			short data = 1024 - buf[i];
 
 			// 偏移
@@ -171,21 +162,17 @@ void RenderRipple()
 // stonesize: “石头”的大小,(石头的半径）
 // stoneweight: 投“石头”的力度
 // Ps: 如果产生错误，一般就是数组越界所致，请酌情调整“石头”的大小和“石头”的力度
-void disturb(int x, int y, int stonesize, int stoneweight)
-{
+void disturb(int x, int y, int stonesize, int stoneweight){
 	// 突破边界不处理
 	if ((x >= PIC_WIDTH - stonesize) ||
 		(x < stonesize) ||
 		(y >= PIC_HEIGHT - stonesize) ||
-		(y < stonesize))
+		(y < stonesize)){
 		return;
-
-	for (int posx = x - stonesize; posx < x + stonesize; posx++)
-	{
-		for (int posy = y - stonesize; posy < y + stonesize; posy++)
-		{
-			if ((posx - x) * (posx - x) + (posy - y) * (posy - y) < stonesize * stonesize)
-			{
+	}
+	for (int posx = x - stonesize; posx < x + stonesize; posx++){
+		for (int posy = y - stonesize; posy < y + stonesize; posy++){
+			if ((posx - x) * (posx - x) + (posy - y) * (posy - y) < stonesize * stonesize){
 				buf[PIC_WIDTH * posy + posx] += stoneweight;
 			}
 		}
@@ -193,12 +180,11 @@ void disturb(int x, int y, int stonesize, int stoneweight)
 }
 
 // 计算fps
-float getFps()
-{
-#define FPS_COUNT 8
+double getFps(){
+#define FPS_COUNT 5
 	static int i = 0;
 	static int oldTime = GetTickCount();
-	static float fps;
+	static double fps;
 
 	if (i > FPS_COUNT)
 	{
